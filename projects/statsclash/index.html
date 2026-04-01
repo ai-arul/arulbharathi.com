@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stats Clash — AI Debate Arena</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* ===== TOKENS ===== */
+:root,[data-theme="light"]{
+  --bg:#f7f6f2;--surface:#f9f8f5;--surface2:#fbfbf9;--surface-off:#f0ede8;
+  --divider:#dcd9d5;--border:#d4d1ca;
+  --text:#28251d;--muted:#7a7974;--faint:#bab9b4;--inverse:#f9f8f4;
+  --freq:#006494;--freq-h:#0b5177;--freq-s:rgba(0,100,148,.07);--freq-bg:#c6d8e4;
+  --bayes:#7a39bb;--bayes-h:#5f2699;--bayes-s:rgba(122,57,187,.07);--bayes-bg:#dacfde;
+  --gold:#d19900;--success:#437a22;--error:#a12c7b;
+  --shadow-sm:0 1px 3px rgba(40,37,29,.07);--shadow-md:0 4px 16px rgba(40,37,29,.1);--shadow-lg:0 12px 40px rgba(40,37,29,.13);
+  --r-sm:.375rem;--r-md:.5rem;--r-lg:.75rem;--r-xl:1rem;--r-full:9999px;
+  --ease:200ms cubic-bezier(.16,1,.3,1);
+  --font-d:'Instrument Serif',Georgia,serif;--font-b:'Inter',sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#0f0e0c;--surface:#161513;--surface2:#1b1a18;--surface-off:#1f1e1c;
+  --divider:#2a2927;--border:#333130;
+  --text:#cdccca;--muted:#797876;--faint:#5a5957;--inverse:#2b2a28;
+  --freq:#5591c7;--freq-h:#3b78ab;--freq-s:rgba(85,145,199,.1);--freq-bg:#1a2d3d;
+  --bayes:#a86fdf;--bayes-h:#9250d0;--bayes-s:rgba(168,111,223,.1);--bayes-bg:#241933;
+  --gold:#e8af34;--success:#6daa45;--error:#d163a7;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.2);--shadow-md:0 4px 16px rgba(0,0,0,.35);--shadow-lg:0 12px 40px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;}
+body{min-height:100dvh;font-family:var(--font-b);font-size:clamp(1rem,.95rem + .25vw,1.125rem);color:var(--text);background:var(--bg);line-height:1.6;overflow-x:hidden;}
+img{display:block;max-width:100%;}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit;}
+h1,h2,h3{text-wrap:balance;line-height:1.15;}
+p,li{text-wrap:pretty;}
+.setup-banner{background:color-mix(in oklch,var(--gold) 10%,var(--surface));border:1px solid color-mix(in oklch,var(--gold) 30%,transparent);border-radius:var(--r-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:flex-start;gap:.75rem;}
+.setup-banner.hidden{display:none;}
+.setup-icon{font-size:1.25rem;flex-shrink:0;margin-top:.1rem;}
+.setup-text{font-size:.875rem;line-height:1.6;}
+.setup-text strong{color:var(--gold);}
+.setup-url-row{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;}
+.setup-input{flex:1;min-width:200px;padding:.45rem .75rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.8rem;font-family:monospace;transition:border-color var(--ease);}
+.setup-input:focus{outline:none;border-color:var(--gold);}
+.setup-save{padding:.45rem 1rem;border-radius:var(--r-full);background:var(--gold);color:var(--inverse);font-size:.8rem;font-weight:700;cursor:pointer;transition:opacity var(--ease);border:none;white-space:nowrap;}
+.setup-save:hover{opacity:.85;}
+.nav{position:sticky;top:0;z-index:100;background:color-mix(in oklch,var(--bg) 85%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--divider);padding:.6rem 1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.nav-left{display:flex;align-items:center;gap:.6rem;}
+.nav-logo{display:flex;align-items:center;gap:.5rem;font-family:var(--font-d);font-size:1.05rem;}
+.nav-logo svg{width:28px;height:28px;}
+.ai-badge{font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:color-mix(in oklch,var(--success) 14%,transparent);color:var(--success);border:1px solid color-mix(in oklch,var(--success) 30%,transparent);border-radius:var(--r-full);padding:2px 8px;}
+.nav-right{display:flex;align-items:center;gap:.75rem;}
+.score-pill{display:flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:700;letter-spacing:.02em;background:var(--surface-off);border:1px solid var(--border);border-radius:var(--r-full);padding:3px 10px;}
+.sf{color:var(--freq);}.sb{color:var(--bayes);}.ss{color:var(--faint);}
+.theme-btn{width:34px;height:34px;border-radius:var(--r-full);background:var(--surface-off);border:1px solid var(--border);display:grid;place-items:center;transition:background var(--ease);}
+.theme-btn:hover{background:var(--divider);}
+.back-link{font-size:.8rem;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:.25rem;transition:color var(--ease);}
+.back-link:hover{color:var(--text);}
+.hero{padding:2.5rem 1.25rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 40% 50% at 20% 50%,color-mix(in oklch,var(--freq) 10%,transparent),transparent 70%),radial-gradient(ellipse 40% 50% at 80% 50%,color-mix(in oklch,var(--bayes) 10%,transparent),transparent 70%);pointer-events:none;}
+.hero-eye{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted);margin-bottom:.75rem;}
+.hero h1{font-family:var(--font-d);font-size:clamp(1.8rem,1.2rem + 2.5vw,3.2rem);margin-bottom:.75rem;position:relative;}
+.hero h1 .vs{color:var(--gold);font-style:italic;}
+.hero-sub{font-size:.9375rem;color:var(--muted);max-width:50ch;margin:0 auto 1.5rem;}
+.container{max-width:1060px;margin-inline:auto;padding-inline:1.25rem;}
+.fighters{display:grid;grid-template-columns:1fr auto 1fr;gap:.875rem;align-items:center;margin-bottom:1.5rem;}
+.fighter{border-radius:var(--r-xl);padding:1.1rem 1.25rem;border:1px solid;position:relative;transition:box-shadow var(--ease);}
+.fighter.freq{background:var(--freq-s);border-color:color-mix(in oklch,var(--freq) 25%,transparent);text-align:left;}
+.fighter.bayes{background:var(--bayes-s);border-color:color-mix(in oklch,var(--bayes) 25%,transparent);text-align:right;}
+.f-emoji{font-size:2rem;line-height:1;margin-bottom:.35rem;}
+.f-name{font-family:var(--font-d);font-size:1.1rem;font-weight:700;}
+.f-title{font-size:.75rem;color:var(--muted);margin-top:.15rem;}
+.f-tag{display:inline-block;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:var(--r-full);margin-top:.4rem;}
+.freq .f-tag{background:color-mix(in oklch,var(--freq) 14%,transparent);color:var(--freq);}
+.bayes .f-tag{background:color-mix(in oklch,var(--bayes) 14%,transparent);color:var(--bayes);}
+.vs-badge{width:46px;height:46px;border-radius:var(--r-full);background:var(--surface-off);border:2px solid var(--border);display:grid;place-items:center;font-family:var(--font-d);font-size:.875rem;font-weight:700;color:var(--gold);font-style:italic;}
+@keyframes pulseFreq{0%,100%{box-shadow:0 0 0 2px var(--freq),0 0 12px color-mix(in oklch,var(--freq) 25%,transparent);}50%{box-shadow:0 0 0 2px var(--freq),0 0 28px color-mix(in oklch,var(--freq) 42%,transparent);}}
+@keyframes pulseBayes{0%,100%{box-shadow:0 0 0 2px var(--bayes),0 0 12px color-mix(in oklch,var(--bayes) 25%,transparent);}50%{box-shadow:0 0 0 2px var(--bayes),0 0 28px color-mix(in oklch,var(--bayes) 42%,transparent);}}
+.speaking-freq{animation:pulseFreq 1.8s ease-in-out infinite;}
+.speaking-bayes{animation:pulseBayes 1.8s ease-in-out infinite;}
+.active-freq{box-shadow:0 0 0 2px var(--freq),var(--shadow-md);}
+.active-bayes{box-shadow:0 0 0 2px var(--bayes),var(--shadow-md);}
+.topic-section{margin-bottom:1.5rem;}
+.section-label{font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;}
+.topic-custom{display:flex;gap:.5rem;margin-bottom:.75rem;}
+.topic-input{flex:1;padding:.55rem .875rem;border-radius:var(--r-full);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.9rem;font-family:var(--font-b);transition:border-color var(--ease),box-shadow var(--ease);}
+.topic-input:focus{outline:none;border-color:var(--text);box-shadow:0 0 0 3px color-mix(in oklch,var(--text) 10%,transparent);}
+.topic-input::placeholder{color:var(--faint);}
+.topic-presets{display:flex;flex-wrap:wrap;gap:.5rem;}
+.preset-btn{padding:.4rem 1rem;border-radius:var(--r-full);border:1px solid var(--border);background:var(--surface);font-size:.8rem;color:var(--muted);cursor:pointer;transition:all var(--ease);}
+.preset-btn:hover{border-color:var(--muted);color:var(--text);}
+.preset-btn.active{background:var(--text);color:var(--inverse);border-color:var(--text);}
+.arena{background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem;box-shadow:var(--shadow-md);}
+.arena-bar{background:var(--surface-off);border-bottom:1px solid var(--divider);padding:.65rem 1.25rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.topic-chip{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.topic-display{font-family:var(--font-d);font-size:.9375rem;font-weight:600;}
+.round-pill{margin-left:auto;font-size:.7rem;font-weight:600;background:var(--divider);padding:2px 10px;border-radius:var(--r-full);color:var(--muted);}
+.ai-indicator{display:flex;align-items:center;gap:.35rem;font-size:.65rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--success);background:color-mix(in oklch,var(--success) 10%,transparent);border:1px solid color-mix(in oklch,var(--success) 25%,transparent);border-radius:var(--r-full);padding:2px 8px;}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:aipulse 2s ease-in-out infinite;}
+@keyframes aipulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+.log{padding:1.5rem;min-height:280px;display:flex;flex-direction:column;gap:1.25rem;}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--muted);font-size:.9rem;gap:.75rem;text-align:center;}
+.empty-state span:first-child{font-size:2.5rem;}
+.bubble{display:flex;gap:.75rem;max-width:90%;animation:bubbleIn .4s cubic-bezier(.16,1,.3,1) both;}
+.bubble.freq{align-self:flex-start;}
+.bubble.bayes{align-self:flex-end;flex-direction:row-reverse;}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(8px) scale(.97);}to{opacity:1;transform:none;}}
+.b-avatar{width:38px;height:38px;flex-shrink:0;border-radius:var(--r-full);display:grid;place-items:center;font-size:1.2rem;border:2px solid;}
+.freq .b-avatar{background:var(--freq-s);border-color:color-mix(in oklch,var(--freq) 30%,transparent);}
+.bayes .b-avatar{background:var(--bayes-s);border-color:color-mix(in oklch,var(--bayes) 30%,transparent);}
+.b-speaker{font-size:.72rem;font-weight:700;margin-bottom:.25rem;}
+.freq .b-speaker{color:var(--freq);}
+.bayes .b-speaker{color:var(--bayes);text-align:right;}
+.b-text{background:var(--surface-off);border:1px solid var(--divider);border-radius:var(--r-lg);padding:.75rem 1rem;font-size:.875rem;line-height:1.7;color:var(--text);}
+.freq .b-text{border-radius:4px var(--r-lg) var(--r-lg) var(--r-lg);}
+.bayes .b-text{border-radius:var(--r-lg) 4px var(--r-lg) var(--r-lg);text-align:right;}
+.b-insight{margin-top:.5rem;font-size:.75rem;padding:.35rem .6rem;border-radius:var(--r-md);font-style:italic;}
+.freq .b-insight{background:color-mix(in oklch,var(--freq) 9%,transparent);color:var(--freq);border-left:2px solid var(--freq);}
+.bayes .b-insight{background:color-mix(in oklch,var(--bayes) 9%,transparent);color:var(--bayes);border-right:2px solid var(--bayes);text-align:right;}
+.cursor{display:inline-block;width:2px;height:1em;background:currentColor;margin-left:2px;vertical-align:text-bottom;animation:blink .7s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+.typing-row{display:flex;align-items:center;gap:.6rem;padding:.6rem 1.25rem;font-size:.75rem;color:var(--muted);}
+.typing-row.hidden{display:none;}
+.dots{display:flex;gap:4px;}
+.dots span{width:6px;height:6px;border-radius:50%;animation:dotBounce 1.2s ease-in-out infinite;}
+.dots span:nth-child(2){animation-delay:.2s;}
+.dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dotBounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-5px);opacity:1;}}
+.dots.freq span{background:var(--freq);}
+.dots.bayes span{background:var(--bayes);}
+.controls{border-top:1px solid var(--divider);padding:.875rem 1.25rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.btn{padding:.5rem 1.25rem;border-radius:var(--r-full);font-size:.875rem;font-weight:600;cursor:pointer;transition:all var(--ease);border:none;display:inline-flex;align-items:center;gap:.35rem;}
+.btn-primary{background:var(--text);color:var(--inverse);}
+.btn-primary:hover{opacity:.84;}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed;}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text);border-color:var(--muted);}
+.btn-ghost:disabled{opacity:.35;cursor:not-allowed;}
+.ctrl-hint{font-size:.75rem;color:var(--faint);margin-left:auto;}
+.error-bubble{background:color-mix(in oklch,var(--error) 10%,var(--surface));border:1px solid color-mix(in oklch,var(--error) 25%,transparent);border-radius:var(--r-lg);padding:.875rem 1rem;margin:0 1.5rem;font-size:.875rem;color:var(--error);}
+.vote-panel{display:none;background:var(--surface-off);border-radius:var(--r-xl);border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;text-align:center;animation:bubbleIn .4s ease both;}
+.vote-panel.show{display:block;}
+.vote-panel h3{font-family:var(--font-d);font-size:1.1rem;margin-bottom:.35rem;}
+.vote-panel p{font-size:.875rem;color:var(--muted);margin-bottom:1.25rem;}
+.vote-btns{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;}
+.vote-btn{padding:.5rem 1.2rem;border-radius:var(--r-full);font-size:.8rem;font-weight:700;cursor:pointer;transition:all var(--ease);border:1px solid;}
+.vote-freq{background:color-mix(in oklch,var(--freq) 13%,transparent);color:var(--freq);border-color:color-mix(in oklch,var(--freq) 28%,transparent);}
+.vote-freq:hover{background:color-mix(in oklch,var(--freq) 22%,transparent);}
+.vote-bayes{background:color-mix(in oklch,var(--bayes) 13%,transparent);color:var(--bayes);border-color:color-mix(in oklch,var(--bayes) 28%,transparent);}
+.vote-bayes:hover{background:color-mix(in oklch,var(--bayes) 22%,transparent);}
+.vote-tie{background:transparent;color:var(--muted);border-color:var(--border);}
+.vote-tie:hover{color:var(--text);border-color:var(--muted);}
+.vote-btn:disabled{opacity:.4;cursor:not-allowed;}
+.vote-result{margin-top:1.25rem;}
+.vote-labels{display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;margin-bottom:.4rem;}
+.vl-f{color:var(--freq);}.vl-b{color:var(--bayes);}
+.vote-bar{height:8px;border-radius:var(--r-full);background:var(--divider);overflow:hidden;display:flex;}
+.vb-f{background:var(--freq);transition:width .6s cubic-bezier(.16,1,.3,1);}
+.vb-b{background:var(--bayes);flex:1;}
+.vote-totals{font-size:.72rem;color:var(--muted);margin-top:.5rem;}
+footer{border-top:1px solid var(--divider);padding:2rem 1.25rem;text-align:center;color:var(--muted);font-size:.75rem;}
+@media(max-width:640px){
+  .fighters{grid-template-columns:1fr 36px 1fr;gap:.5rem;}
+  .fighter{padding:.875rem .875rem;}
+  .f-emoji{font-size:1.6rem;}
+  .vs-badge{width:36px;height:36px;font-size:.75rem;}
+  .bubble{max-width:97%;}
+  .log{padding:1rem;}
+  .controls{padding:.75rem 1rem;}
+  .hero h1{font-size:clamp(1.5rem,5vw,2.2rem);}
+}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-left">
+    <a href="/projects/" class="back-link">← Projects</a>
+    <div class="nav-logo">
+      <svg viewBox="0 0 32 32" fill="none" aria-label="Stats Clash">
+        <circle cx="9" cy="16" r="7" stroke="var(--freq)" stroke-width="2"/>
+        <circle cx="23" cy="16" r="7" stroke="var(--bayes)" stroke-width="2"/>
+        <path d="M16 10v12M13 13l3-3 3 3M13 19l3 3 3-3" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Stats Clash
+    </div>
+    <span class="ai-badge">AI Agents</span>
+  </div>
+  <div class="nav-right">
+    <div class="score-pill">
+      <span class="sf" id="ns-f">F: 0</span>
+      <span class="ss">·</span>
+      <span class="sb" id="ns-b">B: 0</span>
+    </div>
+    <button class="theme-btn" data-theme-toggle aria-label="Toggle theme">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</nav>
+<section class="hero">
+  <p class="hero-eye">Live AI Agent Debate</p>
+  <h1>Frequentist <span class="vs">vs</span> Bayesian</h1>
+  <p class="hero-sub">Two real AI agents — one strict frequentist, one committed Bayesian — argue any statistics topic live. Powered by Cloudflare Workers AI · Llama 3.3 70B.</p>
+</section>
+<div class="container">
+  <div class="setup-banner" id="setup-banner">
+    <span class="setup-icon">⚙️</span>
+    <div class="setup-text">
+      <strong>Connect your Cloudflare Worker</strong> — paste your Worker URL below to activate live AI debates.
+      Deploy <code>worker.js</code> to Cloudflare Workers, then enter your URL (e.g. <code>https://stats-clash-agent.YOUR-NAME.workers.dev</code>).
+      <div class="setup-url-row">
+        <input type="text" class="setup-input" id="worker-url-input" placeholder="https://stats-clash-agent.your-name.workers.dev" autocomplete="off" spellcheck="false">
+        <button class="setup-save" onclick="saveWorkerUrl()">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+  <div class="fighters">
+    <div class="fighter freq" id="card-freq">
+      <div class="f-emoji">🎯</div>
+      <div class="f-name">Prof. Frequentius</div>
+      <div class="f-title">Champion of Repeated Experiments</div>
+      <span class="f-tag">p-values · NHST · confidence intervals</span>
+    </div>
+    <div class="vs-badge">vs</div>
+    <div class="fighter bayes" id="card-bayes">
+      <div class="f-emoji">🔮</div>
+      <div class="f-name">Dr. Bayesia</div>
+      <div class="f-title">Oracle of Prior Knowledge</div>
+      <span class="f-tag">posteriors · priors · Bayes' Theorem</span>
+    </div>
+  </div>
+  <div class="topic-section">
+    <p class="section-label">Choose or type any debate topic</p>
+    <div class="topic-custom">
+      <input type="text" class="topic-input" id="topic-input" placeholder="Type any statistics topic… e.g. 'Sports analytics' or 'Vaccine trials'" maxlength="120">
+    </div>
+    <div class="topic-presets" id="presets">
+      <button class="preset-btn active" data-topic="Medical Testing">🏥 Medical Testing</button>
+      <button class="preset-btn" data-topic="A/B Testing">📊 A/B Testing</button>
+      <button class="preset-btn" data-topic="Weather Forecasting">🌦️ Weather</button>
+      <button class="preset-btn" data-topic="Criminal Justice">⚖️ Criminal Justice</button>
+      <button class="preset-btn" data-topic="Machine Learning">🤖 Machine Learning</button>
+      <button class="preset-btn" data-topic="Finance & Risk">📈 Finance</button>
+      <button class="preset-btn" data-topic="Sports Analytics">🏆 Sports Analytics</button>
+      <button class="preset-btn" data-topic="Election Polling">🗳️ Polling</button>
+    </div>
+  </div>
+  <div class="arena">
+    <div class="arena-bar">
+      <span class="topic-chip">Topic</span>
+      <span class="topic-display" id="topic-display">Medical Testing</span>
+      <div class="ai-indicator"><div class="ai-dot"></div>Live AI</div>
+      <span class="round-pill" id="round-pill">Round 0 / 3</span>
+    </div>
+    <div class="log" id="log">
+      <div class="empty-state">
+        <span>⚡</span>
+        <span>Pick a topic and press <strong>Start Debate</strong><br>AI agents will generate live arguments</span>
+      </div>
+    </div>
+    <div class="typing-row hidden" id="typing-row">
+      <div class="dots" id="typing-dots"><span></span><span></span><span></span></div>
+      <span id="typing-label">Thinking...</span>
+    </div>
+    <div class="controls">
+      <button class="btn btn-primary" id="btn-start">▶ Start Debate</button>
+      <button class="btn btn-ghost hidden" id="btn-next">Next Round →</button>
+      <button class="btn btn-ghost hidden" id="btn-reset">↺ New Debate</button>
+      <span class="ctrl-hint" id="ctrl-hint">Connect worker &amp; choose a topic</span>
+    </div>
+  </div>
+  <div class="vote-panel" id="vote-panel">
+    <h3>Who won this round? 🏆</h3>
+    <p>Vote for the argument you found most convincing</p>
+    <div class="vote-btns">
+      <button class="vote-btn vote-freq" id="vbf">🎯 Vote Frequentist</button>
+      <button class="vote-btn vote-bayes" id="vbb">🔮 Vote Bayesian</button>
+      <button class="vote-btn vote-tie" id="vbt">🤝 Too Close</button>
+    </div>
+    <div class="vote-result hidden" id="vote-result">
+      <div class="vote-labels">
+        <span class="vl-f" id="vl-f">Frequentist 0%</span>
+        <span class="vl-b" id="vl-b">Bayesian 0%</span>
+      </div>
+      <div class="vote-bar">
+        <div class="vb-f" id="vb-fill" style="width:0%"></div>
+        <div class="vb-b"></div>
+      </div>
+      <div class="vote-totals" id="vote-totals"></div>
+    </div>
+  </div>
+</div>
+<footer>
+  <p>Stats Clash · AI Agent Debate · arulbharathi.com/projects/statsclash</p>
+  <p style="margin-top:.35rem;">Powered by Cloudflare Workers AI · Llama 3.3 70B · 100% free tier</p>
+</footer>
+<script>
+let WORKER_URL = 'https://stats-clash-agent.arulbharathi-1991.workers.dev';
+function loadWorkerUrl() {
+  const metaWorker = document.querySelector('meta[name="worker-url"]');
+  if (metaWorker) WORKER_URL = metaWorker.content;
+  const saved = typeof sessionWorkerUrl !== 'undefined' ? sessionWorkerUrl : null;
+  if (saved) WORKER_URL = saved;
+  if (WORKER_URL && WORKER_URL !== 'YOUR_WORKER_URL') {
+    document.getElementById('setup-banner').classList.add('hidden');
+    document.getElementById('ctrl-hint').textContent = 'AI agents ready · pick a topic';
+  } else {
+    document.getElementById('ctrl-hint').textContent = 'Configure worker URL above first';
+  }
+}
+let sessionWorkerUrl = null;
+function saveWorkerUrl() {
+  const val = document.getElementById('worker-url-input').value.trim();
+  if (!val.startsWith('http')) { alert('Please enter a valid URL starting with https://'); return; }
+  WORKER_URL = val;
+  sessionWorkerUrl = val;
+  document.getElementById('setup-banner').classList.add('hidden');
+  document.getElementById('ctrl-hint').textContent = '✅ Worker connected · ready to debate';
+}
+let currentTopic = 'Medical Testing';
+let currentRound = 0;
+let debateHistory = [];
+let started = false;
+let complete = false;
+let roundVoted = false;
+let votes = { freq:0, bayes:0, tie:0 };
+const log = document.getElementById('log');
+const btnStart = document.getElementById('btn-start');
+const btnNext = document.getElementById('btn-next');
+const btnReset = document.getElementById('btn-reset');
+const typingRow = document.getElementById('typing-row');
+const typingDots = document.getElementById('typing-dots');
+const typingLabel = document.getElementById('typing-label');
+const topicDisplay = document.getElementById('topic-display');
+const roundPill = document.getElementById('round-pill');
+const ctrlHint = document.getElementById('ctrl-hint');
+const votePanel = document.getElementById('vote-panel');
+const cardFreq = document.getElementById('card-freq');
+const cardBayes = document.getElementById('card-bayes');
+document.getElementById('presets').addEventListener('click', e => {
+  const btn = e.target.closest('.preset-btn');
+  if (!btn) return;
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTopic = btn.dataset.topic;
+  document.getElementById('topic-input').value = '';
+  topicDisplay.textContent = currentTopic;
+});
+document.getElementById('topic-input').addEventListener('input', e => {
+  if (e.target.value.trim()) {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    currentTopic = e.target.value.trim();
+    topicDisplay.textContent = currentTopic;
+  }
+});
+async function fetchArgument(side, round, history) {
+  if (!WORKER_URL || WORKER_URL === 'YOUR_WORKER_URL') {
+    throw new Error('Worker URL not configured. Please enter your Cloudflare Worker URL above.');
+  }
+  const resp = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic: currentTopic, side, round, history })
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error || `Worker returned ${resp.status}`);
+  }
+  return resp.json();
+}
+async function typewriterText(el, text, delay = 18) {
+  el.textContent = '';
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  el.appendChild(cursor);
+  for (let i = 0; i < text.length; i++) {
+    el.insertBefore(document.createTextNode(text[i]), cursor);
+    await new Promise(r => setTimeout(r, delay));
+  }
+  cursor.remove();
+}
+function addBubble(side, data, animate=true) {
+  const isFreq = side === 'freq';
+  const div = document.createElement('div');
+  div.className = `bubble ${side}`;
+  if (!animate) div.style.animation = 'none';
+  div.innerHTML = `
+    <div class="b-avatar">${isFreq ? '🎯' : '🔮'}</div>
+    <div class="b-content">
+      <div class="b-speaker">${isFreq ? 'Prof. Frequentius' : 'Dr. Bayesia'}</div>
+      <div class="b-text" id="bt-${Date.now()}"></div>
+      <div class="b-insight" id="bi-${Date.now()}"></div>
+    </div>`;
+  log.appendChild(div);
+  div.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  return div;
+}
+function showError(msg) {
+  const existing = log.querySelector('.error-bubble');
+  if (existing) existing.remove();
+  const err = document.createElement('div');
+  err.className = 'error-bubble';
+  err.innerHTML = `⚠️ ${msg}`;
+  log.appendChild(err);
+}
+async function showTyping(side, ms) {
+  typingDots.className = `dots ${side}`;
+  typingLabel.textContent = `${side === 'freq' ? 'Prof. Frequentius' : 'Dr. Bayesia'} is generating argument...`;
+  typingRow.classList.remove('hidden');
+  const card = side === 'freq' ? cardFreq : cardBayes;
+  const other = side === 'freq' ? cardBayes : cardFreq;
+  card.className = `fighter ${side} speaking-${side}`;
+  other.className = `fighter ${side === 'freq' ? 'bayes' : 'freq'}`;
+  await new Promise(r => setTimeout(r, ms));
+  typingRow.classList.add('hidden');
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function reset() {
+  currentRound = 0; debateHistory = []; started = false; complete = false; roundVoted = false;
+  log.innerHTML = `<div class="empty-state"><span>⚡</span><span>Press <strong>Start Debate</strong> to begin a live AI debate</span></div>`;
+  roundPill.textContent = 'Round 0 / 3';
+  topicDisplay.textContent = currentTopic;
+  btnStart.classList.remove('hidden'); btnStart.disabled = false;
+  btnNext.classList.add('hidden'); btnReset.classList.add('hidden');
+  votePanel.classList.remove('show');
+  typingRow.classList.add('hidden');
+  cardFreq.className = 'fighter freq'; cardBayes.className = 'fighter bayes';
+  ctrlHint.textContent = WORKER_URL ? 'AI agents ready · pick a topic' : 'Configure worker URL first';
+}
+async function runRound() {
+  btnStart.disabled = true; btnNext.disabled = true;
+  ctrlHint.textContent = '⚡ AI generating live argument...';
+  try {
+    await showTyping('freq', 1200);
+    const fData = await fetchArgument('freq', currentRound + 1, debateHistory);
+    const fBubble = addBubble('freq', fData);
+    const fTextEl = fBubble.querySelector('.b-text');
+    const fInsightEl = fBubble.querySelector('.b-insight');
+    await typewriterText(fTextEl, fData.argument, 16);
+    fInsightEl.textContent = '💡 ' + fData.insight;
+    debateHistory.push({ side: 'freq', text: fData.argument });
+    cardFreq.className = 'fighter freq active-freq';
+    cardBayes.className = 'fighter bayes';
+    await sleep(800);
+  } catch(e) {
+    typingRow.classList.add('hidden');
+    cardFreq.className = 'fighter freq'; cardBayes.className = 'fighter bayes';
+    showError('Frequentist agent error: ' + e.message);
+    btnStart.disabled = false; ctrlHint.textContent = 'Error — check worker URL and try again'; return;
+  }
+  try {
+    await showTyping('bayes', 1400);
+    const bData = await fetchArgument('bayes', currentRound + 1, debateHistory);
+    const bBubble = addBubble('bayes', bData);
+    const bTextEl = bBubble.querySelector('.b-text');
+    const bInsightEl = bBubble.querySelector('.b-insight');
+    await typewriterText(bTextEl, bData.argument, 16);
+    bInsightEl.textContent = '💡 ' + bData.insight;
+    debateHistory.push({ side: 'bayes', text: bData.argument });
+    cardFreq.className = 'fighter freq';
+    cardBayes.className = 'fighter bayes active-bayes';
+    await sleep(400);
+  } catch(e) {
+    typingRow.classList.add('hidden');
+    cardFreq.className = 'fighter freq'; cardBayes.className = 'fighter bayes';
+    showError('Bayesian agent error: ' + e.message);
+    btnStart.disabled = false; ctrlHint.textContent = 'Error — check worker URL and try again'; return;
+  }
+  currentRound++;
+  roundPill.textContent = `Round ${currentRound} / 3`;
+  roundVoted = false;
+  votePanel.classList.add('show');
+  document.getElementById('vote-result').classList.add('hidden');
+  ['vbf','vbb','vbt'].forEach(id => document.getElementById(id).disabled = false);
+  votePanel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  if (currentRound < 3) {
+    btnNext.classList.remove('hidden'); btnNext.disabled = false;
+    ctrlHint.textContent = 'Vote, then continue to the next round';
+  } else {
+    complete = true;
+    btnReset.classList.remove('hidden');
+    cardFreq.className = 'fighter freq'; cardBayes.className = 'fighter bayes';
+    ctrlHint.textContent = 'Debate complete! Start a new one anytime.';
+  }
+  btnStart.disabled = false;
+}
+btnStart.addEventListener('click', () => {
+  if (!started) { started = true; log.innerHTML = ''; btnStart.classList.add('hidden'); }
+  runRound();
+});
+btnNext.addEventListener('click', () => { btnNext.classList.add('hidden'); votePanel.classList.remove('show'); runRound(); });
+btnReset.addEventListener('click', reset);
+function recordVote(winner) {
+  if (roundVoted) return; roundVoted = true;
+  if (winner==='freq') { votes.freq++; document.getElementById('ns-f').textContent=`F: ${votes.freq}`; }
+  else if (winner==='bayes') { votes.bayes++; document.getElementById('ns-b').textContent=`B: ${votes.bayes}`; }
+  else votes.tie++;
+  const total = votes.freq + votes.bayes + votes.tie;
+  const fp = Math.round(votes.freq/total*100), bp = Math.round(votes.bayes/total*100);
+  document.getElementById('vl-f').textContent = `Frequentist ${fp}%`;
+  document.getElementById('vl-b').textContent = `Bayesian ${bp}%`;
+  document.getElementById('vb-fill').style.width = `${fp}%`;
+  document.getElementById('vote-totals').textContent = `${total} vote${total!==1?'s':''} cast · Ties: ${votes.tie}`;
+  document.getElementById('vote-result').classList.remove('hidden');
+  ['vbf','vbb','vbt'].forEach(id => document.getElementById(id).disabled = true);
+}
+document.getElementById('vbf').addEventListener('click', ()=>recordVote('freq'));
+document.getElementById('vbb').addEventListener('click', ()=>recordVote('bayes'));
+document.getElementById('vbt').addEventListener('click', ()=>recordVote('tie'));
+(function(){const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;let d=r.getAttribute('data-theme')||'dark';
+function set(v){d=v;r.setAttribute('data-theme',d);if(t)t.innerHTML=d==='dark'?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>':'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';}
+set(d);t&&t.addEventListener('click',()=>set(d==='dark'?'light':'dark'));})();
+loadWorkerUrl();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Projects — Arul Bharathi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{--bg:#f7f6f2;--surface:#f9f8f5;--s2:#f0ede8;--text:#28251d;--muted:#7a7974;--faint:#bab9b4;--border:#d4d1ca;--div:#dcd9d5;--accent:#01696f;--sh:0 4px 16px rgba(40,37,29,.09);--font-d:'Instrument Serif',Georgia,serif;--font-b:'Inter',sans-serif;}
+[data-theme="dark"]{--bg:#0f0e0c;--surface:#161513;--s2:#1f1e1c;--text:#e8e6e2;--muted:#8a8884;--faint:#4a4947;--border:#333130;--div:#2a2927;--accent:#4f98a3;--sh:0 4px 20px rgba(0,0,0,.45);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;}
+body{min-height:100dvh;font-family:var(--font-b);background:var(--bg);color:var(--text);}
+.nav{position:sticky;top:0;z-index:100;background:color-mix(in oklch,var(--bg) 88%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--div);padding:.75rem 1.5rem;display:flex;align-items:center;gap:.75rem;}
+.nav-logo{display:flex;align-items:center;gap:.5rem;font-family:var(--font-d);font-size:1rem;}
+.nav-logo svg{width:24px;height:24px;}
+.sep{color:var(--faint);}
+.pg{font-size:.875rem;color:var(--muted);}
+.theme-btn{margin-left:auto;width:34px;height:34px;border-radius:50%;background:var(--s2);border:1px solid var(--border);cursor:pointer;display:grid;place-items:center;color:var(--muted);}
+.header{padding:3.5rem 1.5rem 2rem;max-width:1100px;margin-inline:auto;}
+.ey{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;}
+.header h1{font-family:var(--font-d);font-size:clamp(1.8rem,4vw,3rem);line-height:1.1;margin-bottom:.75rem;}
+.header h1 em{color:var(--accent);font-style:italic;}
+.header p{font-size:.9375rem;color:var(--muted);max-width:54ch;line-height:1.7;}
+.grid{padding:0 1.5rem 4rem;max-width:1100px;margin-inline:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:1.25rem;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:.875rem;overflow:hidden;transition:box-shadow .22s,transform .22s,border-color .22s;display:flex;flex-direction:column;text-decoration:none;color:var(--text);}
+a.card:hover{box-shadow:var(--sh);transform:translateY(-3px);border-color:color-mix(in oklch,var(--muted) 60%,transparent);}
+.banner{height:110px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;}
+.b-stats{background:linear-gradient(135deg,color-mix(in oklch,#5591c7 18%,var(--s2)),color-mix(in oklch,#a86fdf 18%,var(--s2)));}
+.b-soon{background:var(--s2);}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.sh{background:linear-gradient(90deg,var(--s2) 25%,color-mix(in oklch,var(--muted) 8%,var(--s2)) 50%,var(--s2) 75%);background-size:200% 100%;animation:shimmer 2.5s ease-in-out infinite;}
+.body{padding:1.25rem;flex:1;display:flex;flex-direction:column;}
+.tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.7rem;}
+.tag{font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:9999px;}
+.t-live{background:color-mix(in oklch,#4f98a3 14%,transparent);color:#4f98a3;}
+.t-soon{background:color-mix(in oklch,var(--muted) 12%,transparent);color:var(--muted);}
+.t-edu{background:color-mix(in oklch,#6daa45 14%,transparent);color:#6daa45;}
+.t-stat{background:color-mix(in oklch,#a86fdf 14%,transparent);color:#a86fdf;}
+.t-fraud{background:color-mix(in oklch,#e8af34 14%,transparent);color:#e8af34;}
+.t-agent{background:color-mix(in oklch,#5591c7 14%,transparent);color:#5591c7;}
+.title{font-family:var(--font-d);font-size:1.2rem;margin-bottom:.45rem;}
+.desc{font-size:.875rem;color:var(--muted);line-height:1.65;flex:1;margin-bottom:1rem;}
+.cta{font-size:.8rem;font-weight:600;color:var(--accent);}
+.cta-dim{color:var(--faint);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+.card{animation:fadeUp .45s cubic-bezier(.16,1,.3,1) both;}
+.card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.1s}.card:nth-child(3){animation-delay:.15s}.card:nth-child(4){animation-delay:.2s}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-logo">
+    <svg viewBox="0 0 24 24" fill="none">
+      <rect width="24" height="24" rx="6" fill="color-mix(in oklch,var(--accent) 14%,transparent)"/>
+      <path d="M6 18L12 6l6 12" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M8.5 14h7" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    Arul Bharathi
+  </div>
+  <span class="sep">/</span><span class="pg">Projects</span>
+  <button class="theme-btn" data-theme-toggle aria-label="Toggle theme">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</nav>
+<div class="header">
+  <p class="ey">Interactive AI Tools by Arul Bharathi</p>
+  <h1>Applied AI <em>in Action</em></h1>
+  <p>Hands-on tools and experiments exploring machine learning, statistics, and applied AI — built to learn, teach, and share.</p>
+</div>
+<div class="grid">
+  <a href="/projects/statsclash/" class="card">
+    <div class="banner b-stats">⚔️</div>
+    <div class="body">
+      <div class="tags"><span class="tag t-live">Live · AI Agents</span><span class="tag t-edu">Education</span><span class="tag t-stat">Statistics</span></div>
+      <div class="title">Stats Clash</div>
+      <p class="desc">Frequentist vs Bayesian — two live AI agents argue any statistics topic. Powered by Cloudflare Workers AI · Llama 3.3 70B.</p>
+      <span class="cta">Launch App →</span>
+    </div>
+  </a>
+  <div class="card" style="cursor:default;">
+    <div class="banner b-soon sh">🛡️</div>
+    <div class="body">
+      <div class="tags"><span class="tag t-soon">Coming Soon</span><span class="tag t-fraud">Fraud Detection</span></div>
+      <div class="title">Fraud Signal Explorer</div>
+      <p class="desc">Visualize how ML models detect anomalous transactions. Explore feature importance, decision boundaries, and model confidence.</p>
+      <span class="cta cta-dim">In Development</span>
+    </div>
+  </div>
+  <div class="card" style="cursor:default;">
+    <div class="banner b-soon sh">🤖</div>
+    <div class="body">
+      <div class="tags"><span class="tag t-soon">Coming Soon</span><span class="tag t-agent">Agentic AI</span></div>
+      <div class="title">Agent Arena</div>
+      <p class="desc">Watch multi-agent reinforcement learning systems collaborate and compete. Interactive simulation of strategies and emergent behaviors.</p>
+      <span class="cta cta-dim">In Development</span>
+    </div>
+  </div>
+  <div class="card" style="cursor:default;">
+    <div class="banner b-soon sh">⚖️</div>
+    <div class="body">
+      <div class="tags"><span class="tag t-soon">Coming Soon</span><span class="tag t-edu">Responsible AI</span></div>
+      <div class="title">Bias &amp; Fairness Lab</div>
+      <p class="desc">Explore how bias enters ML pipelines and how mitigation techniques like reweighting and adversarial debiasing work in practice.</p>
+      <span class="cta cta-dim">In Development</span>
+    </div>
+  </div>
+</div>
+<script>
+(function(){const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;let d=r.getAttribute('data-theme')||'dark';
+function set(v){d=v;r.setAttribute('data-theme',d);if(t)t.innerHTML=d==='dark'?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';}
+set(d);t&&t.addEventListener('click',()=>set(d==='dark'?'light':'dark'));})();
+</script>
+</body></html>

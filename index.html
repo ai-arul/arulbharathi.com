@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Arul Bharathi — Applied AI Leader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{--bg:#f7f6f2;--surface:#f0ede8;--text:#28251d;--muted:#7a7974;--faint:#bab9b4;--border:#d4d1ca;--accent:#01696f;--font-d:'Instrument Serif',Georgia,serif;--font-b:'Inter',sans-serif;}
+[data-theme="dark"]{--bg:#0f0e0c;--surface:#1c1b19;--text:#e8e6e2;--muted:#8a8884;--faint:#4a4947;--border:#333130;--accent:#4f98a3;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;}
+body{min-height:100dvh;font-family:var(--font-b);background:var(--bg);color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;position:relative;overflow:hidden;}
+body::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 60% at 50% 50%,color-mix(in oklch,var(--accent) 10%,transparent),transparent 70%);pointer-events:none;}
+.card{position:relative;z-index:1;text-align:center;max-width:560px;}
+.logo{display:inline-flex;align-items:center;gap:.75rem;margin-bottom:2.5rem;}
+.logo svg{width:42px;height:42px;}
+.logo-name{font-family:var(--font-d);font-size:1.25rem;}
+.badge{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:color-mix(in oklch,var(--accent) 15%,transparent);color:var(--accent);border:1px solid color-mix(in oklch,var(--accent) 30%,transparent);border-radius:9999px;padding:4px 14px;margin-bottom:1.5rem;}
+h1{font-family:var(--font-d);font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;margin-bottom:1rem;}
+h1 em{color:var(--accent);font-style:italic;}
+.sub{font-size:clamp(.9rem,2vw,1.05rem);color:var(--muted);line-height:1.75;margin-bottom:2.5rem;max-width:44ch;margin-inline:auto;}
+.links{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem;}
+.btn{padding:.55rem 1.4rem;border-radius:9999px;font-size:.875rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:all .2s cubic-bezier(.16,1,.3,1);}
+.btn-primary{background:var(--text);color:var(--bg);}
+.btn-primary:hover{opacity:.82;}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text);border-color:var(--muted);}
+.divider{width:48px;height:1px;background:var(--border);margin:0 auto 1.75rem;}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;}
+.chip{font-size:.7rem;padding:3px 10px;border-radius:9999px;background:var(--surface);border:1px solid var(--border);color:var(--muted);}
+.theme-btn{position:fixed;top:1rem;right:1rem;width:36px;height:36px;border-radius:50%;background:var(--surface);border:1px solid var(--border);cursor:pointer;display:grid;place-items:center;color:var(--muted);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card>*{animation:fadeUp .5s cubic-bezier(.16,1,.3,1) both;}
+.card>*:nth-child(1){animation-delay:.05s}.card>*:nth-child(2){animation-delay:.1s}.card>*:nth-child(3){animation-delay:.15s}.card>*:nth-child(4){animation-delay:.2s}.card>*:nth-child(5){animation-delay:.25s}.card>*:nth-child(6){animation-delay:.3s}
+</style>
+</head>
+<body>
+<button class="theme-btn" data-theme-toggle aria-label="Toggle theme">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+<div class="card">
+  <div class="logo">
+    <svg viewBox="0 0 42 42" fill="none">
+      <rect width="42" height="42" rx="11" fill="color-mix(in oklch,var(--accent) 14%,transparent)"/>
+      <path d="M11 31 L21 11 L31 31" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M15 24h12" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="29" cy="14" r="3.5" fill="var(--accent)" opacity=".65"/>
+    </svg>
+    <span class="logo-name">Arul Bharathi</span>
+  </div>
+  <span class="badge">Portfolio — Coming Soon</span>
+  <h1>Applied AI <em>Leader</em>,<br>Trainer &amp; Speaker</h1>
+  <p class="sub">Building AI systems that matter. McAfee · SFU Big Data Alumni · Fraud Detection · Multi-Agent Systems · Thought Leadership.</p>
+  <div class="links">
+    <a href="/projects/" class="btn btn-primary">⚡ Explore My Projects</a>
+    <a href="https://linkedin.com/in/arulbharathi" class="btn btn-ghost" target="_blank" rel="noopener">LinkedIn →</a>
+  </div>
+  <div class="divider"></div>
+  <div class="chips">
+    <span class="chip">Applied AI</span><span class="chip">Fraud Detection</span>
+    <span class="chip">Multi-Agent Systems</span><span class="chip">ML Engineering</span>
+    <span class="chip">Python · Databricks · AWS</span><span class="chip">Responsible AI</span>
+  </div>
+</div>
+<script>
+(function(){const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;let d=r.getAttribute('data-theme')||'dark';
+function set(v){d=v;r.setAttribute('data-theme',d);if(t)t.innerHTML=d==='dark'?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>':'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';}
+set(d);t&&t.addEventListener('click',()=>set(d==='dark'?'light':'dark'));})();
+</script>
+</body></html>
